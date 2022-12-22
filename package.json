@@ -1,0 +1,58 @@
+{
+  "name": "vue-wrap-balancer",
+  "version": "0.0.0",
+  "packageManager": "pnpm@7.18.0",
+  "description": "Better text wrapping for Vue.",
+  "author": "Robert Soriano <sorianorobertc@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/wobsoriano/vue-wrap-balancer#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wobsoriano/vue-wrap-balancer.git"
+  },
+  "bugs": "https://github.com/wobsoriano/vue-wrap-balancer/issues",
+  "keywords": [
+    "vue",
+    "wrapping",
+    "text",
+    "typography"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build-fast": "tsup src/index.ts --format cjs,esm",
+    "build": "pnpm build-fast --dts-resolve",
+    "lint": "eslint .",
+    "prepublishOnly": "pnpm build",
+    "release": "bumpp && npm publish",
+    "update-deps": "taze -w && pnpm i",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "vue": "^3.2.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.34.0",
+    "bumpp": "^8.2.1",
+    "eslint": "^8.30.0",
+    "taze": "^0.8.5",
+    "tsup": "6.4.0",
+    "typescript": "^4.8.4",
+    "vue": "^3.2.45"
+  },
+  "eslintConfig": {
+    "extends": "@antfu"
+  }
+}
