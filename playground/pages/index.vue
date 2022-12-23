@@ -35,6 +35,7 @@ function handleRangeChange(payload: Event) {
                 The quick brown fox jumps over the lazy dog
               </Balancer>
             </h2>
+            <code>Ratio: {{ ratio.w.toFixed(2) }}</code>
           </div>
         </div>
       </div>
