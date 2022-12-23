@@ -9,6 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "scule": "^1.0.0",
     "vue-use-spring": "^0.1.1",
     "vue-wrap-balancer": "workspace:*"
   },

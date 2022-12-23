@@ -1,8 +1,5 @@
-import { defineComponent, h, ref, watchPostEffect, withDirectives } from 'vue'
+import { computed, defineComponent, h, ref, watchPostEffect } from 'vue'
 import { nanoid } from 'nanoid'
-import { BindOnceDirective } from 'vue-bind-once'
-// @ts-expect-error: Nuxt
-import { useHead } from '#imports'
 
 const SYMBOL_KEY = '__wrap_balancer'
 
@@ -13,9 +10,6 @@ const relayout = (
 ) => {
   wrapper
     = wrapper || (document.querySelector(`[data-br="${id}"]`) as HTMLElement)
-
-  if (!wrapper)
-    return
 
   const container = wrapper.parentElement as HTMLElement
 
@@ -73,21 +67,18 @@ export default defineComponent({
       required: false,
       default: 1,
     },
+    /**
+     * Custom id for SSR.
+     */
+    id: {
+      type: String,
+      required: false,
+    },
   },
   setup(props, { slots }) {
     const As = props.as
-    const id = nanoid(5)
+    const id = computed(() => props.id || nanoid(5))
     const wrapperRef = ref<HTMLElement | null>(null)
-
-    if (typeof useHead !== 'undefined') {
-      useHead({
-        script: [
-          {
-            children: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}("${id}",${props.ratio})`,
-          },
-        ],
-      })
-    }
 
     // Re-balance on content change and on mount/hydration
     watchPostEffect(() => {
@@ -122,16 +113,18 @@ export default defineComponent({
       })
     })
 
-    return () => withDirectives(h(As, {
-      'data-brr': props.ratio,
-      'ref': wrapperRef,
-      'style': {
-        display: 'inline-block',
-        verticalAlign: 'top',
-        textDecoration: 'inherit',
-      },
-    }, slots.default?.()), [
-      [BindOnceDirective, { 'data-br': id }],
-    ])
+    return () => [
+      h(As, {
+        'data-br': id.value,
+        'data-brr': props.ratio,
+        'ref': wrapperRef,
+        'style': {
+          display: 'inline-block',
+          verticalAlign: 'top',
+          textDecoration: 'inherit',
+        },
+      }, slots.default?.({ initialScriptForSSR: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}("${id.value}",${props.ratio})` })),
+      slots.script?.(),
+    ]
   },
 })
