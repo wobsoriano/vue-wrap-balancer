@@ -19,7 +19,7 @@ function handleRangeChange(payload: Event) {
         <input
           type="range"
           defaultValue="65"
-          @change="handleRangeChange"
+          @input="handleRangeChange"
         >
       </div>
       <div class="demo" style="width: 480px; max-width: 100%">
