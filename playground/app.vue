@@ -6,6 +6,11 @@
 </template>
 
 <style>
+:root {
+  --font-alice: 'Alice', serif;
+  --font-inter: 'Inter', sans-serif;
+}
+
 *,
 *::before,
 *::after {
@@ -25,9 +30,6 @@ h2 {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  justify-content: center;
   -webkit-font-smoothing: subpixel-antialiased;
   color: #222;
   background-color: #f5f5f5;
@@ -35,7 +37,7 @@ body {
   line-height: 1.5;
   --w0: 320px;
   --w1: min(27.5vw, 480px);
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-inter);
 }
 
 .logo-container {
