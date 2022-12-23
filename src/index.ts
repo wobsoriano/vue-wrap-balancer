@@ -43,8 +43,6 @@ const relayout = (
   }
 }
 
-const MINIFIED_RELAYOUT_STR = relayout.toString()
-
 export default defineComponent({
   props: {
     /**
@@ -71,7 +69,7 @@ export default defineComponent({
      * Custom id for SSR.
      */
     id: {
-      type: String,
+      type: [String, Number],
       required: false,
     },
   },
@@ -113,18 +111,15 @@ export default defineComponent({
       })
     })
 
-    return () => [
-      h(As, {
-        'data-br': id.value,
-        'data-brr': props.ratio,
-        'ref': wrapperRef,
-        'style': {
-          display: 'inline-block',
-          verticalAlign: 'top',
-          textDecoration: 'inherit',
-        },
-      }, slots.default?.({ initialScriptForSSR: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}("${id.value}",${props.ratio})` })),
-      slots.script?.(),
-    ]
+    return () => h(As, {
+      'data-br': id.value,
+      'data-brr': props.ratio,
+      'ref': wrapperRef,
+      'style': {
+        display: 'inline-block',
+        verticalAlign: 'top',
+        textDecoration: 'inherit',
+      },
+    }, slots.default?.())
   },
 })

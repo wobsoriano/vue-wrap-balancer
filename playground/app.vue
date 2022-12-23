@@ -25,6 +25,9 @@ h2 {
 
 body {
   margin: 0;
+  display: flex;
+  place-items: center;
+  justify-content: center;
   -webkit-font-smoothing: subpixel-antialiased;
   color: #222;
   background-color: #f5f5f5;
