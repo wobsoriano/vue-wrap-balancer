@@ -1,0 +1,18 @@
+{
+  "name": "playground",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "vue-use-spring": "^0.1.1",
+    "vue-wrap-balancer": "workspace:*"
+  },
+  "devDependencies": {
+    "nuxt": "3.0.0"
+  }
+}
