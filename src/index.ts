@@ -138,9 +138,11 @@ export default defineComponent({
         [ssrId, id],
       ]),
       // Calculate the balance initially for SSR.
-      h('script', {
-        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}("${id}",${props.ratio})`,
-      }),
+      withDirectives(h('script', {
+        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}(document.currentScript.getAttribute("${ssrIdAttr}"),${props.ratio})`,
+      }), [
+        [ssrId, id],
+      ]),
     ]
   },
 })
