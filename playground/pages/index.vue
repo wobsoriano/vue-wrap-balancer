@@ -66,7 +66,7 @@ import Balancer from 'vue-wrap-balancer'
     </p>
     <p style="text-align: left; font-size: 14px; display: flex; justify-content: center;">
       <Balancer>
-        This <a href="https://vue-wrap-balancer.vercel.app/"> project</a> is a port of <a href="https://react-wrap-balancer.vercel.app/">react-wrap-balancer</a>
+        This <a href="https://github.com/wobsoriano/vue-wrap-balancer"> project</a> is a port of <a href="https://react-wrap-balancer.vercel.app/">react-wrap-balancer</a>
         which was inspired by Adobe’s <a href="https://github.com/adobe/balance-text">balance-text</a> project,
         and Daniel Aleksandersen’s <a href="https://www.ctrl.blog/entry/text-wrap-balance.html">Improving the New York Times’ line wrap balancer</a>.
         If you want to learn more, you can also take a look at the <a href="https://drafts.csswg.org/css-text-4/#text-wrap">text-wrap: balance</a> proposal.
