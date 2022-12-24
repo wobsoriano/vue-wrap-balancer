@@ -43,6 +43,8 @@ const relayout = (
   }
 }
 
+const MINIFIED_RELAYOUT_STR = relayout.toString()
+
 export default defineComponent({
   props: {
     /**
@@ -104,15 +106,21 @@ export default defineComponent({
       })
     })
 
-    return () => h(As, {
-      'data-br': id.value,
-      'data-brr': props.ratio,
-      'ref': wrapperRef,
-      'style': {
-        display: 'inline-block',
-        verticalAlign: 'top',
-        textDecoration: 'inherit',
-      },
-    }, slots.default?.())
+    return () => [
+      h(As, {
+        'data-br': id.value,
+        'data-brr': props.ratio,
+        'ref': wrapperRef,
+        'style': {
+          display: 'inline-block',
+          verticalAlign: 'top',
+          textDecoration: 'inherit',
+        },
+      }, slots.default?.()),
+      // Calculate the balance initially for SSR
+      h('script', {
+        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}("${id.value}",${props.ratio})`,
+      }),
+    ]
   },
 })
