@@ -1,18 +1,11 @@
 <script setup lang="ts">
 import Balancer from 'vue-wrap-balancer'
-import { useSpring } from 'vue-use-spring'
-
-const ratio = useSpring({ w: 0.65 })
-
-function handleRangeChange(payload: Event) {
-  ratio.w = Number((payload.target as any).value) / 100
-}
 </script>
 
 <template>
   <main>
     <Head>
-      <Link href="https://fonts.googleapis.com/css2?family=Inter&family=Alice:wght@400;700&display=block&subset=latin" rel="stylesheet" />
+      <Link href="https://fonts.googleapis.com/css2?family=Alice&family=Inter:wght@400;700&display=block&subset=latin" rel="stylesheet" />
     </Head>
     <div class="logo-container">
       <a
@@ -32,34 +25,35 @@ function handleRangeChange(payload: Event) {
         Simple Vue Component That Makes Titles More Readable
       </Balancer>
     </p>
-    <div>
-      <div class="demo-container">
-        <div class="controller">
-          <input
-            type="range"
-            defaultValue="65"
-            @input="handleRangeChange"
-          >
+    <Comparison align="center">
+      <template #a>
+        <div class="item">
+          <h2>
+            Vue: A JavaScript framework for building UI on the web.
+          </h2>
+          <Content />
         </div>
-        <div class="demo" style="width: 480px; max-width: 100%">
-          <div style="text-align: center; position: relative;">
-            <div>
-              <h2 class="ratio-ruler">
-                <Balancer>
-                  <span>The quick brown fox jumps over the lazy dog</span>
-                </Balancer>
-              </h2>
-              <h2 class="ratio-title">
-                <Balancer :ratio="ratio.w">
-                  The quick brown fox jumps over the lazy dog
-                </Balancer>
-              </h2>
-              <code>{{ `<Balancer ratio="${ratio.w.toFixed(2)}" />` }}</code>
-            </div>
-          </div>
+      </template>
+      <template #b>
+        <div class="item">
+          <h2>
+            <Balancer>
+              Vue: A JavaScript framework for building UI on the web.
+            </Balancer>
+          </h2>
+          <Content />
         </div>
-      </div>
-    </div>
+      </template>
+    </Comparison>
+    <h3>
+      <Balancer>
+        Vue Wrap Balancer avoids single hanging word on the last line
+      </Balancer>
+    </h3>
+    <p class="headline">
+      <Balancer>Custom Balance Ratio</Balancer>
+    </p>
+    <Ratio />
     <h3>
       <Balancer>
         Adjust the balance ratio to a custom value between
@@ -67,5 +61,17 @@ function handleRangeChange(payload: Event) {
         <span class="code">1</span> (compact, the default)
       </Balancer>
     </h3>
+    <p class="headline">
+      <Balancer>About Vue Wrap Balancer</Balancer>
+    </p>
+    <p style="text-align: left; font-size: 14px; display: flex; justify-content: center;">
+      <Balancer>
+        This <a href="https://vue-wrap-balancer.vercel.app/"> project</a> is a port of <a href="https://react-wrap-balancer.vercel.app/">react-wrap-balancer</a>
+        which was inspired by Adobe’s <a href="https://github.com/adobe/balance-text">balance-text</a> project,
+        and Daniel Aleksandersen’s <a href="https://www.ctrl.blog/entry/text-wrap-balance.html">Improving the New York Times’ line wrap balancer</a>.
+        If you want to learn more, you can also take a look at the <a href="https://drafts.csswg.org/css-text-4/#text-wrap">text-wrap: balance</a> proposal.
+      </Balancer>
+    </p>
+    <DeployedOnVercel />
   </main>
 </template>
