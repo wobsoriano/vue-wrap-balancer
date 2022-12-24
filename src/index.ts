@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, ref, watchPostEffect } from 'vue'
+import { computed, defineComponent, h, onMounted, onUnmounted, ref, watchPostEffect } from 'vue'
 import { nanoid } from 'nanoid'
 
 const SYMBOL_KEY = '__wrap_balancer'
@@ -82,31 +82,24 @@ export default defineComponent({
     watchPostEffect(() => {
       if (!wrapperRef.value)
         return
-      // Re-assign the function here as the component can be dynamically rendered, and script tag won't work in that case.
-      // @ts-expect-error: TODO
+
+      // @ts-expect-error: Re-assign function and Resize
       (self[SYMBOL_KEY] = relayout)(0, props.ratio, wrapperRef.value)
     })
 
-    watchPostEffect((onInvalidate) => {
-      if (!wrapperRef.value)
-        return
-
-      const container = wrapperRef.value.parentElement as HTMLElement
+    onMounted(() => {
+      const container = wrapperRef.value?.parentElement as HTMLElement
       if (!container)
         return
 
       const resizeObserver = new ResizeObserver(() => {
-        if (!wrapperRef.value)
-          return
-
-        // Re-assign the function here as the component can be dynamically rendered, and script tag won't work in that case.
-        // @ts-expect-error: TODO
+        // @ts-expect-error: Resize
         self[SYMBOL_KEY](0, props.ratio, wrapperRef.value)
       })
 
       resizeObserver.observe(container)
 
-      onInvalidate(() => {
+      onUnmounted(() => {
         resizeObserver.unobserve(container)
       })
     })
