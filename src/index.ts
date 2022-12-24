@@ -10,14 +10,15 @@ import { nanoid } from 'nanoid'
 
 const SYMBOL_KEY = '__wrap_balancer'
 
-const ssrIdAttr = 'data-br'
 export const ssrId: Directive = {
   created(el, binding) {
-    el.setAttribute(ssrIdAttr, binding.value || nanoid(5))
+    const [key, value] = binding.value
+    el.setAttribute(key, value || nanoid(5))
   },
   getSSRProps(binding) {
+    const [key, value] = binding.value
     return {
-      [ssrIdAttr]: binding.value,
+      [key]: value,
     }
   },
 }
@@ -135,13 +136,13 @@ export default defineComponent({
           textDecoration: 'inherit',
         },
       }, slots.default?.()), [
-        [ssrId, id],
+        [ssrId, ['data-br', id]],
       ]),
       // Calculate the balance initially for SSR.
       withDirectives(h('script', {
-        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}(document.currentScript.getAttribute("${ssrIdAttr}"),${props.ratio})`,
+        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}(document.currentScript.getAttribute("id"),${props.ratio})`,
       }), [
-        [ssrId, id],
+        [ssrId, ['id', id]],
       ]),
     ]
   },
