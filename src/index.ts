@@ -5,10 +5,22 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import { computed, defineComponent, h, onMounted, onUnmounted, ref, watchPostEffect } from 'vue'
+import { type Directive, defineComponent, h, onMounted, onUnmounted, ref, watchPostEffect, withDirectives } from 'vue'
 import { nanoid } from 'nanoid'
 
 const SYMBOL_KEY = '__wrap_balancer'
+
+const ssrIdAttr = 'data-br'
+export const ssrId: Directive = {
+  created(el, binding) {
+    el.setAttribute(ssrIdAttr, binding.value || nanoid(5))
+  },
+  getSSRProps(binding) {
+    return {
+      [ssrIdAttr]: binding.value,
+    }
+  },
+}
 
 const relayout = (
   id: string | number,
@@ -84,7 +96,7 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     const As = props.as
-    const id = computed(() => props.id || nanoid(5))
+    const id = props.id || nanoid(5)
     const wrapperRef = ref<HTMLElement | null>(null)
 
     // Re-balance on content change and on mount/hydration
@@ -114,8 +126,7 @@ export default defineComponent({
     })
 
     return () => [
-      h(As, {
-        'data-br': id.value,
+      withDirectives(h(As, {
         'data-brr': props.ratio,
         'ref': wrapperRef,
         'style': {
@@ -123,10 +134,12 @@ export default defineComponent({
           verticalAlign: 'top',
           textDecoration: 'inherit',
         },
-      }, slots.default?.()),
-      // Calculate the balance initially for SSR
+      }, slots.default?.()), [
+        [ssrId, id],
+      ]),
+      // Calculate the balance initially for SSR.
       h('script', {
-        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}("${id.value}",${props.ratio})`,
+        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}("${id}",${props.ratio})`,
       }),
     ]
   },
