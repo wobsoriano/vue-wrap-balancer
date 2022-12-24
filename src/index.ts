@@ -12,8 +12,8 @@ const SYMBOL_KEY = '__wrap_balancer'
 
 export const ssrId: Directive = {
   created(el, binding) {
-    const [key, value] = binding.value
-    el.setAttribute(key, value || nanoid(5))
+    const [key] = binding.value
+    el.setAttribute(key, el[key] || nanoid(5))
   },
   getSSRProps(binding) {
     const [key, value] = binding.value
