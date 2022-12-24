@@ -11,6 +11,9 @@ function handleRangeChange(payload: Event) {
 
 <template>
   <main>
+    <Head>
+      <Link href="https://fonts.googleapis.com/css2?family=Inter&family=Alice:wght@400;700&display=block&subset=latin" rel="stylesheet" />
+    </Head>
     <div class="logo-container">
       <a
         href="https://github.com/wobsoriano/vue-wrap-balancer"
@@ -30,9 +33,6 @@ function handleRangeChange(payload: Event) {
       </Balancer>
     </p>
     <div>
-      <Head>
-        <Link href="https://fonts.googleapis.com/css2?family=Inter&family=Alice:wght@400;700&display=block&subset=latin" rel="stylesheet" />
-      </Head>
       <div class="demo-container">
         <div class="controller">
           <input
