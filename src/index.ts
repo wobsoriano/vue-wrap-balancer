@@ -96,7 +96,7 @@ export default defineComponent({
       required: false,
     },
   },
-  setup(props, { slots }) {
+  setup(props, { slots, attrs }) {
     const As = props.as
     const id = props.id || nanoid(5)
     const wrapperRef = ref<HTMLElement | null>(null)
@@ -129,6 +129,7 @@ export default defineComponent({
 
     return () => [
       withDirectives(h(As, {
+        ...attrs,
         'data-brr': props.ratio,
         'ref': wrapperRef,
         'style': {
