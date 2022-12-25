@@ -5,17 +5,18 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
+import type { DirectiveBinding } from 'vue'
 import { type Directive, defineComponent, h, onMounted, onUnmounted, ref, watchPostEffect, withDirectives } from 'vue'
 import { nanoid } from 'nanoid'
 
 const SYMBOL_KEY = '__wrap_balancer'
 
-export const ssrId: Directive = {
-  created(el, binding) {
-    const [key] = binding.value
-    el.setAttribute(key, el[key] || nanoid(5))
+export const vBindOnce: Directive<HTMLElement> = {
+  created(el, binding: DirectiveBinding<[string, string]>) {
+    const [key, value] = binding.value
+    el.setAttribute(key, value || nanoid(5))
   },
-  getSSRProps(binding) {
+  getSSRProps(binding: DirectiveBinding<[string, string]>) {
     const [key, value] = binding.value
     return {
       [key]: value,
@@ -136,13 +137,13 @@ export default defineComponent({
           textDecoration: 'inherit',
         },
       }, slots.default?.()), [
-        [ssrId, ['data-br', id]],
+        [vBindOnce, ['data-br', id]],
       ]),
       // Calculate the balance initially for SSR.
       withDirectives(h('script', {
-        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}(document.currentScript.getAttribute("id"),${props.ratio})`,
+        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`,
       }), [
-        [ssrId, ['id', id]],
+        [vBindOnce, ['data-ssr-id', id]],
       ]),
     ]
   },
