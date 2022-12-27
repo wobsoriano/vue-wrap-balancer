@@ -26,6 +26,8 @@ import Balancer from 'vue-wrap-balancer'
 </template>
 ```
 
+It works with Vue 2 and 3.
+
 ## License
 
 MIT
