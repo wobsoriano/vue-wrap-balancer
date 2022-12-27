@@ -21,19 +21,18 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "import": "./dist/index.mjs"
     }
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build-fast": "tsup src/index.ts --format cjs,esm",
-    "build": "pnpm build-fast --dts-resolve",
+    "build": "tsup",
     "lint": "eslint .",
     "prepublishOnly": "pnpm build",
     "release": "bumpp && npm publish",
@@ -41,10 +40,17 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "vue": "^3.2.0"
+    "@vue/composition-api": "^1.7.1",
+    "vue": "^2.7.0 || ^3.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
   },
   "dependencies": {
-    "nanoid": "^4.0.0"
+    "nanoid": "^4.0.0",
+    "vue-demi": "latest"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.34.0",

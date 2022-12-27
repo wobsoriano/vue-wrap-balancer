@@ -5,9 +5,10 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import type { DirectiveBinding } from 'vue'
-import { type Directive, defineComponent, h, onMounted, onUnmounted, ref, watchPostEffect, withDirectives } from 'vue'
+import type { DirectiveBinding } from 'vue-demi'
+import { type Directive, defineComponent, onMounted, onUnmounted, ref, watchPostEffect, withDirectives } from 'vue-demi'
 import { nanoid } from 'nanoid'
+import { h } from './utils'
 
 const SYMBOL_KEY = '__wrap_balancer'
 
