@@ -1,9 +1,9 @@
 import { h as hDemi, isVue2 } from 'vue-demi'
 
 interface Options {
-  props?: Record<any, any>
-  domProps?: Record<any, any>
-  on?: Record<any, any>
+  props?: Record<string, string | number>
+  domProps?: Record<string, any>
+  on?: Record<string, Function>
 }
 
 const adaptOnsV3 = (ons: Object) => {
