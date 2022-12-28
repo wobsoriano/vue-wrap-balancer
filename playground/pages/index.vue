@@ -6,6 +6,30 @@ import Balancer from 'vue-wrap-balancer'
   <main>
     <Head>
       <Link href="https://fonts.googleapis.com/css2?family=Alice&family=Inter:wght@400;700&display=block&subset=latin" rel="stylesheet" />
+      <meta name="title" content="Vue Wrap Balancer">
+      <meta
+        name="description"
+        content="Simple Vue Component That Makes Titles More Readable"
+      >
+      <meta
+        name="keywords"
+        content="vue, wrapping, typography, balance, web"
+      >
+      <meta name="author" content="Robert Soriano">
+      <meta name="og:title" content="Vue Wrap Balancer">
+      <meta
+        name="og:description"
+        content="Simple Vue Component That Makes Titles More Readable"
+      >
+      <meta property="og:site_name" content="Vue Wrap Balancer">
+      <meta
+        property="og:url"
+        content="https://vue-wrap-balancer.vercel.app"
+      >
+      <meta
+        property="og:image"
+        content="https://og-image.vercel.app/Vue%20Wrap%20Balancer.jpg"
+      >
     </Head>
     <div class="logo-container">
       <a
