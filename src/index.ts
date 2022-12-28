@@ -25,7 +25,19 @@ export const vBindOnce: Directive<HTMLElement> = {
   },
 }
 
-const relayout = (
+type RelayoutFn = (
+  id: string | number,
+  ratio: number,
+  wrapper?: HTMLElement
+) => void
+
+declare global {
+  interface Window {
+    [SYMBOL_KEY]: RelayoutFn
+  }
+}
+
+const relayout: RelayoutFn = (
   id: string | number,
   ratio: number,
   wrapper?: HTMLElement,
@@ -41,27 +53,27 @@ const relayout = (
   wrapper.style.maxWidth = ''
 
   // Get the intial container size
-  const w = container.clientWidth
-  const h = container.clientHeight
+  const width = container.clientWidth
+  const height = container.clientHeight
 
   // Synchronously do binary search and calculate the layout
-  let l = w / 2
-  let r = w
-  let m
+  let left: number = width / 2
+  let right: number = width
+  let middle: number
 
-  if (w) {
-    while (l + 1 < r) {
-      m = ~~((l + r) / 2)
-      update(m)
-      if (container.clientHeight === h)
-        r = m
+  if (width) {
+    while (left + 1 < right) {
+      middle = ~~((left + right) / 2)
+      update(middle)
+      if (container.clientHeight === height)
+        right = middle
 
       else
-        l = m
+        left = middle
     }
 
     // Update the wrapper width
-    update(r * ratio + w * (1 - ratio))
+    update(right * ratio + width * (1 - ratio))
   }
 }
 
@@ -107,17 +119,21 @@ export default defineComponent({
       if (!wrapperRef.value)
         return
 
-      // @ts-expect-error: Re-assign function and Resize
       (self[SYMBOL_KEY] = relayout)(0, props.ratio, wrapperRef.value)
     })
 
+    // Re-balance on resize
     onMounted(() => {
-      const container = wrapperRef.value?.parentElement as HTMLElement
+      if (!wrapperRef.value)
+        return
+
+      const container = wrapperRef.value.parentElement
       if (!container)
         return
 
       const resizeObserver = new ResizeObserver(() => {
-        // @ts-expect-error: Resize
+        if (!wrapperRef.value)
+          return
         self[SYMBOL_KEY](0, props.ratio, wrapperRef.value)
       })
 
