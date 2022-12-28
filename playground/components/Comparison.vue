@@ -16,6 +16,8 @@ defineProps({
 
 const api = useSpring({ w: 0.55 })
 
+const slotWidth = computed(() => `calc(${api.w} * var(--w1) + ${150 * (1 - api.w) - 31 * api.w}px)`)
+
 function handleRangeChange(payload: Event) {
   api.w = Number((payload.target as any).value) / 100
 }
@@ -35,11 +37,11 @@ function handleRangeChange(payload: Event) {
     >
       <div>
         <legend>Default</legend>
-        <slot name="a" :width="`calc(${api.w} * var(--w1) + ${150 * (1 - api.w) - 31 * api.w}px)`" />
+        <slot name="a" :width="slotWidth" />
       </div>
       <div>
         <legend>With Balancer</legend>
-        <slot name="b" :width="`calc(${api.w} * var(--w1) + ${150 * (1 - api.w) - 31 * api.w}px)`" />
+        <slot name="b" :width="slotWidth" />
       </div>
     </div>
   </div>
