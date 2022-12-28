@@ -2,6 +2,11 @@
 import { useSpring } from 'vue-use-spring'
 
 defineProps({
+  staticWidth: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
   align: {
     type: String,
     required: false,
@@ -26,15 +31,15 @@ function handleRangeChange(payload: Event) {
       >
     </div>
     <div
-      class="demo" :style="{ width: `calc(${api.w * 100}% + ${1 - api.w} * var(--w0))`, textAlign: align }"
+      class="demo" :style="{ width: staticWidth ? 'calc(55% + 144px)' : `calc(${api.w * 100}% + ${1 - api.w} * var(--w0))`, textAlign: align }"
     >
       <div>
         <legend>Default</legend>
-        <slot name="a" />
+        <slot name="a" :width="`calc(${api.w} * var(--w1) + ${150 * (1 - api.w) - 31 * api.w}px)`" />
       </div>
       <div>
         <legend>With Balancer</legend>
-        <slot name="b" />
+        <slot name="b" :width="`calc(${api.w} * var(--w1) + ${150 * (1 - api.w) - 31 * api.w}px)`" />
       </div>
     </div>
   </div>
