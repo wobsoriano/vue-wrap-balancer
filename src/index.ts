@@ -5,25 +5,11 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import type { Directive, DirectiveBinding } from 'vue-demi'
 import { defineComponent, onMounted, onUnmounted, ref, watchPostEffect, withDirectives } from 'vue-demi'
 import { nanoid } from 'nanoid'
-import { h } from './utils'
+import { h, vBindOnce } from './utils'
 
 const SYMBOL_KEY = '__wrap_balancer'
-
-export const vBindOnce: Directive<HTMLElement> = {
-  created(el, binding: DirectiveBinding<[string, string]>) {
-    const [key, value] = binding.value
-    el.setAttribute(key, value || nanoid(5))
-  },
-  getSSRProps(binding: DirectiveBinding<[string, string]>) {
-    const [key, value] = binding.value
-    return {
-      [key]: value,
-    }
-  },
-}
 
 type RelayoutFn = (
   id: string | number,

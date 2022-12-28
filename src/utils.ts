@@ -1,4 +1,6 @@
 import { h as hDemi, isVue2 } from 'vue-demi'
+import type { Directive, DirectiveBinding } from 'vue-demi'
+import { nanoid } from 'nanoid'
 
 interface Options {
   props?: Record<string, string | number>
@@ -25,4 +27,17 @@ export const h = (type: String | Record<any, any>, options: Options & any = {}, 
   const ons = adaptOnsV3(on)
   const params = { ...extraOptions, ...props, ...domProps, ...ons }
   return hDemi(type, params, chidren)
+}
+
+export const vBindOnce: Directive<HTMLElement> = {
+  created(el, binding: DirectiveBinding<[string, string]>) {
+    const [key, value] = binding.value
+    el.setAttribute(key, value || nanoid(5))
+  },
+  getSSRProps(binding: DirectiveBinding<[string, string]>) {
+    const [key, value] = binding.value
+    return {
+      [key]: value,
+    }
+  },
 }
