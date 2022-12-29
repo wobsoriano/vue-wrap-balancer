@@ -9,7 +9,7 @@ Vue Wrap Balancer is a simple Vue Component that makes your titles more readable
 ## Installation
 
 ```bash
-pnpm add vue-wrap-balancer
+npm install vue-wrap-balancer
 ```
 
 ## Usage
