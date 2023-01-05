@@ -42,7 +42,7 @@ import { Provider } from 'vue-wrap-balancer'
 </template>
 ```
 
-It works with Vue 2 and 3.
+For use cases, please visit [**vue-wrap-balancer.vercel.app**](https://vue-wrap-balancer.vercel.app).
 
 ## License
 
