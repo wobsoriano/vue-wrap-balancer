@@ -1,3 +1,4 @@
+/* eslint-disable vue/one-component-per-file */
 /*!
  * Original code by Shu Ding
  * MIT Licensed, Copyright 2022 Shu Ding, see https://github.com/shuding/react-wrap-balancer/blob/main/LICENSE.md for details
@@ -5,11 +6,12 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import { defineComponent, onMounted, onUnmounted, ref, watchPostEffect, withDirectives } from 'vue-demi'
+import { defineComponent, inject, onUnmounted, provide, ref, watchPostEffect, withDirectives } from 'vue-demi'
 import { nanoid } from 'nanoid'
 import { h, vBindOnce } from './utils'
 
-const SYMBOL_KEY = '__wrap_balancer'
+const SYMBOL_KEY = '__wrap_b'
+const SYMBOL_OBSERVER_KEY = '__wrap_o'
 
 type RelayoutFn = (
   id: string | number,
@@ -21,16 +23,14 @@ declare global {
   interface Window {
     [SYMBOL_KEY]: RelayoutFn
   }
+
+  interface HTMLElement {
+    [SYMBOL_OBSERVER_KEY]: ResizeObserver
+  }
 }
 
-const relayout: RelayoutFn = (
-  id: string | number,
-  ratio: number,
-  wrapper?: HTMLElement,
-) => {
-  wrapper
-    = wrapper || (document.querySelector(`[data-br="${id}"]`) as HTMLElement)
-
+const relayout: RelayoutFn = (id, ratio, wrapper) => {
+  wrapper = wrapper || (document.querySelector(`[data-br="${id}"]`) as HTMLElement)
   const container = wrapper.parentElement as HTMLElement
 
   const update = (width: number) => (wrapper!.style.maxWidth = `${width}px`)
@@ -53,7 +53,6 @@ const relayout: RelayoutFn = (
       update(middle)
       if (container.clientHeight === height)
         right = middle
-
       else
         left = middle
     }
@@ -61,9 +60,35 @@ const relayout: RelayoutFn = (
     // Update the wrapper width
     update(right * ratio + width * (1 - ratio))
   }
+
+  // Create a new observer if we don't have one.
+  // Note that we must inline the key here as we use `toString()` to serialize
+  // the function.
+  if (!wrapper.__wrap_o) {
+    (wrapper.__wrap_o = new ResizeObserver(() => {
+      self.__wrap_b(0, +wrapper!.dataset.brr!, wrapper)
+    })).observe(container)
+  }
 }
 
-const MINIFIED_RELAYOUT_STR = relayout.toString()
+const RELAYOUT_STR = relayout.toString()
+
+function createScriptElement(injected: boolean, suffix?: string) {
+  return h('script', {
+    innerHTML: (injected ? '' : `self.${SYMBOL_KEY}=${RELAYOUT_STR};`) + (suffix || ''),
+  })
+}
+
+export const Provider = defineComponent({
+  setup(_props, { slots }) {
+    provide('BALANCER_CONTEXT', true)
+
+    return () => [
+      createScriptElement(false),
+      slots.default?.(),
+    ]
+  },
+})
 
 export default defineComponent({
   props: {
@@ -99,35 +124,27 @@ export default defineComponent({
     const As = props.as
     const id = props.id || nanoid(5)
     const wrapperRef = ref<HTMLElement | null>(null)
+    const hasProvider = inject<boolean>('BALANCER_CONTEXT', false)
 
     // Re-balance on content change and on mount/hydration
     watchPostEffect(() => {
       if (!wrapperRef.value)
         return
 
-      (self[SYMBOL_KEY] = relayout)(0, props.ratio, wrapperRef.value)
+      ;(self[SYMBOL_KEY] = relayout)(0, props.ratio, wrapperRef.value)
     })
 
-    // Re-balance on resize
-    onMounted(() => {
+    // Remove the observer when unmounting.
+    onUnmounted(() => {
       if (!wrapperRef.value)
         return
 
-      const container = wrapperRef.value.parentElement
-      if (!container)
-        return
-
-      const resizeObserver = new ResizeObserver(() => {
-        if (!wrapperRef.value)
-          return
-        self[SYMBOL_KEY](0, props.ratio, wrapperRef.value)
-      })
-
-      resizeObserver.observe(container)
-
-      onUnmounted(() => {
-        resizeObserver.unobserve(container)
-      })
+      const resizeObserver = wrapperRef.value[SYMBOL_OBSERVER_KEY]
+      if (resizeObserver) {
+        resizeObserver.disconnect()
+        // @ts-expect-error: TODO
+        delete wrapperRef.value[SYMBOL_OBSERVER_KEY]
+      }
     })
 
     return () => [
@@ -143,10 +160,7 @@ export default defineComponent({
       }, slots.default?.()), [
         [vBindOnce, ['data-br', id]],
       ]),
-      // Calculate the balance initially for SSR.
-      withDirectives(h('script', {
-        innerHTML: `self.${SYMBOL_KEY}=${MINIFIED_RELAYOUT_STR};self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`,
-      }), [
+      withDirectives(createScriptElement(hasProvider, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
         [vBindOnce, ['data-ssr-id', id]],
       ]),
     ]

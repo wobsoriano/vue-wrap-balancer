@@ -7,9 +7,4 @@ export default defineConfig({
   minify: true,
   external: ['vue-demi'],
   dts: true,
-  outExtension({ format }) {
-    return {
-      js: format === 'esm' ? '.mjs' : `.${format}`,
-    }
-  },
 })

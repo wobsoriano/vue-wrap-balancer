@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { Provider } from 'vue-wrap-balancer'
 </script>
 
 <template>
-  <NuxtPage />
+  <Provider>
+    <NuxtPage />
+  </Provider>
 </template>
 
 <style>

@@ -14,6 +14,8 @@ npm install vue-wrap-balancer
 
 ## Usage
 
+The simplest way is to wrap the text content with `<Balancer>`:
+
 ```vue
 <script setup>
 import Balancer from 'vue-wrap-balancer'
@@ -21,8 +23,22 @@ import Balancer from 'vue-wrap-balancer'
 
 <template>
   <h1>
-    <Balancer>My Awesome Title</Balancer>
+    <Balancer>My Title</Balancer>
   </h1>
+</template>
+```
+
+If you have multiple `<Balancer>` components used, it’s recommended (but optional) to use `<Provider>` to wrap the entire app. This will make them share the re-balance logic and reduce the HTML size:
+
+```vue
+<script setup>
+import { Provider } from 'vue-wrap-balancer'
+</script>
+
+<template>
+  <Provider>
+    <App />
+  </Provider>
 </template>
 ```
 
