@@ -33,6 +33,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch --onSuccess=\"pnpm -C playground dev\"",
     "lint": "eslint .",
     "prepublishOnly": "pnpm build",
     "release": "bumpp && npm publish",

@@ -112,17 +112,10 @@ export default defineComponent({
       required: false,
       default: 1,
     },
-    /**
-     * Custom id for SSR.
-     */
-    id: {
-      type: [String, Number],
-      required: false,
-    },
   },
   setup(props, { slots, attrs }) {
     const As = props.as
-    const id = props.id || nanoid(5)
+    const id = attrs.id || nanoid(5)
     const wrapperRef = ref<HTMLElement | null>(null)
     const hasProvider = inject<boolean>('BALANCER_CONTEXT', false)
 
