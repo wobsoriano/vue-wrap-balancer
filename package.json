@@ -54,12 +54,12 @@
     "vue-demi": "latest"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.34.0",
+    "@antfu/eslint-config": "^0.34.1",
     "bumpp": "^8.2.1",
-    "eslint": "^8.30.0",
+    "eslint": "^8.31.0",
     "taze": "^0.8.5",
     "tsup": "6.5.0",
-    "typescript": "^4.8.4",
+    "typescript": "^4.9.4",
     "vue": "^3.2.45"
   },
   "eslintConfig": {
