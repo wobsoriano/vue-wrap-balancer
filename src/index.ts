@@ -80,6 +80,7 @@ function createScriptElement(injected: boolean, suffix?: string) {
 }
 
 export const Provider = defineComponent({
+  name: 'BalancerProvider',
   setup(_props, { slots }) {
     provide('BALANCER_CONTEXT', true)
 
@@ -91,6 +92,7 @@ export const Provider = defineComponent({
 })
 
 export default defineComponent({
+  name: 'Balancer',
   props: {
     /**
      * The HTML tag to use for the wrapper element.
