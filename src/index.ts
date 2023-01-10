@@ -25,7 +25,7 @@ declare global {
   }
 
   interface HTMLElement {
-    [SYMBOL_OBSERVER_KEY]: ResizeObserver
+    [SYMBOL_OBSERVER_KEY]: ResizeObserver | undefined
   }
 }
 
@@ -135,7 +135,6 @@ export default defineComponent({
       const resizeObserver = wrapperRef.value[SYMBOL_OBSERVER_KEY]
       if (resizeObserver) {
         resizeObserver.disconnect()
-        // @ts-expect-error: TODO
         delete wrapperRef.value[SYMBOL_OBSERVER_KEY]
       }
     })
