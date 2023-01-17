@@ -156,11 +156,12 @@ export default defineComponent({
     return () => h('Fragment', [
       h(As, {
         ...attrs,
-        // @ts-expect-error: Todo
-        'data-brr': props.ratio,
-        'data-br': id,
-        'ref': wrapperRef,
-        'style': {
+        domProps: {
+          'data-brr': props.ratio,
+          'data-br': id,
+        },
+        ref: wrapperRef,
+        style: {
           display: 'inline-block',
           verticalAlign: 'top',
           textDecoration: 'inherit',
