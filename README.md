@@ -1,6 +1,6 @@
 # Vue Wrap Balancer
 
-Vue port of [React Wrap Balancer](https://github.com/shuding/react-wrap-balancer). Check here for a [demo](https://vue-wrap-balancer.vercel.app/) with Nuxt.
+Vue 2 port of [React Wrap Balancer](https://github.com/shuding/react-wrap-balancer).
 
 Vue Wrap Balancer is a simple Vue Component that makes your titles more readable in different viewport sizes. It improves the wrapping to avoid situations like single word in the last line, makes the content more “balanced”:
 
@@ -23,7 +23,9 @@ import Balancer from 'vue-wrap-balancer'
 
 <template>
   <h1>
-    <Balancer>My Title</Balancer>
+    <Balancer id="my-title">
+      My Title
+    </Balancer>
   </h1>
 </template>
 ```

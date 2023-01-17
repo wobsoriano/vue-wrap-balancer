@@ -6,9 +6,8 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import { defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect, withDirectives } from 'vue'
-import { nanoid } from 'nanoid'
-import { vBindOnce } from './utils'
+import { defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect } from 'vue'
+import { Fragment } from 'vue-fragment'
 
 const SYMBOL_KEY = '__wrap_b'
 const SYMBOL_OBSERVER_KEY = '__wrap_o'
@@ -75,24 +74,28 @@ const RELAYOUT_STR = relayout.toString()
 
 function createScriptElement(injected: boolean, suffix?: string) {
   return h('script', {
-    innerHTML: (injected ? '' : `self.${SYMBOL_KEY}=${RELAYOUT_STR};`) + (suffix || ''),
+    domProps: {
+      innerHTML: (injected ? '' : `self.${SYMBOL_KEY}=${RELAYOUT_STR};`) + (suffix || ''),
+    },
   })
 }
 
 export const Provider = defineComponent({
   name: 'BalancerProvider',
+  components: { Fragment },
   setup(_props, { slots }) {
     provide('BALANCER_CONTEXT', true)
 
-    return () => [
+    return () => h('Fragment', [
       createScriptElement(false),
       slots.default?.(),
-    ]
+    ])
   },
 })
 
 export default defineComponent({
   name: 'Balancer',
+  components: { Fragment },
   props: {
     /**
      * The HTML tag to use for the wrapper element.
@@ -114,10 +117,16 @@ export default defineComponent({
       required: false,
       default: 1,
     },
+    /**
+     * Required for SSR.
+     */
+    id: {
+      type: String,
+      required: true,
+    },
   },
   setup(props, { slots, attrs }) {
     const As = props.as
-    const id = attrs.id || nanoid(5)
     const wrapperRef = ref<HTMLElement | null>(null)
     const hasProvider = inject<boolean>('BALANCER_CONTEXT', false)
 
@@ -141,22 +150,20 @@ export default defineComponent({
       }
     })
 
-    return () => [
-      withDirectives(h(As, {
+    return () => h('Fragment', [
+      h(As, {
         ...attrs,
+        // @ts-expect-error: Todo
         'data-brr': props.ratio,
+        'data-br': props.id,
         'ref': wrapperRef,
         'style': {
           display: 'inline-block',
           verticalAlign: 'top',
           textDecoration: 'inherit',
         },
-      }, slots.default?.()), [
-        [vBindOnce, ['data-br', id]],
-      ]),
-      withDirectives(createScriptElement(hasProvider, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
-        [vBindOnce, ['data-ssr-id', id]],
-      ]),
-    ]
+      }, slots.default?.()),
+      createScriptElement(hasProvider, `self.${SYMBOL_KEY}(${props.id},${props.ratio})`),
+    ])
   },
 })

@@ -1,6 +1,6 @@
 {
-  "name": "vue-wrap-balancer",
-  "version": "0.2.2",
+  "name": "vue2-wrap-balancer",
+  "version": "0.0.1",
   "packageManager": "pnpm@7.25.0",
   "description": "Better text wrapping for Vue.",
   "author": "Robert Soriano <sorianorobertc@gmail.com>",
@@ -19,21 +19,17 @@
   ],
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
-    }
+    "require": "./dist/index.cjs",
+    "import": "./dist/index.js"
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch --onSuccess=\"pnpm -C playground dev\"",
     "lint": "eslint .",
     "prepublishOnly": "pnpm build",
     "release": "bumpp && npm publish",
@@ -41,10 +37,16 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "vue": "^3.2.0"
+    "@vue/composition-api": "^1.7.1",
+    "vue": ">= 2.5 < 2.7"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
   },
   "dependencies": {
-    "nanoid": "^4.0.0"
+    "vue-fragment": "^1.6.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.34.1",
@@ -53,7 +55,7 @@
     "taze": "^0.8.5",
     "tsup": "6.5.0",
     "typescript": "^4.9.4",
-    "vue": "^3.2.45"
+    "vue": "^2.7.14"
   },
   "eslintConfig": {
     "extends": "@antfu"
