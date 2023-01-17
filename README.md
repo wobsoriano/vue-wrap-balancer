@@ -44,6 +44,8 @@ import { Provider } from 'vue-wrap-balancer'
 
 For use cases, please visit [**vue-wrap-balancer.vercel.app**](https://vue-wrap-balancer.vercel.app).
 
+For Vue 2, check [this](https://github.com/wobsoriano/vue-wrap-balancer/tree/vue2) branch.
+
 ## License
 
 MIT
