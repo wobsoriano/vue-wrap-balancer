@@ -9,7 +9,7 @@ Vue Wrap Balancer is a simple Vue Component that makes your titles more readable
 ## Installation
 
 ```bash
-npm install vue-wrap-balancer
+npm install vue2-wrap-balancer
 ```
 
 ## Usage
@@ -18,7 +18,7 @@ The simplest way is to wrap the text content with `<Balancer>`:
 
 ```vue
 <script setup>
-import Balancer from 'vue-wrap-balancer'
+import Balancer from 'vue2-wrap-balancer'
 </script>
 
 <template>
@@ -36,7 +36,7 @@ If you have multiple `<Balancer>` components used, it’s recommended (but optio
 
 ```vue
 <script setup>
-import { Provider } from 'vue-wrap-balancer'
+import { Provider } from 'vue2-wrap-balancer'
 </script>
 
 <template>
