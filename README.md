@@ -30,6 +30,8 @@ import Balancer from 'vue-wrap-balancer'
 </template>
 ```
 
+Make sure to have an `id` attribute when using with Nuxt 2.
+
 If you have multiple `<Balancer>` components used, it’s recommended (but optional) to use `<Provider>` to wrap the entire app. This will make them share the re-balance logic and reduce the HTML size:
 
 ```vue
