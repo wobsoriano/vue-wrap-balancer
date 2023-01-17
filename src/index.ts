@@ -167,7 +167,7 @@ export default defineComponent({
           textDecoration: 'inherit',
         },
       }, slots.default?.()),
-      createScriptElement(hasProvider, `self.${SYMBOL_KEY}(${id},${props.ratio})`),
+      createScriptElement(hasProvider, `self.${SYMBOL_KEY}('${id}',${props.ratio})`),
     ])
   },
 })
