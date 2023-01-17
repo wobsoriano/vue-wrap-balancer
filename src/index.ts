@@ -8,7 +8,6 @@
  */
 import { defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect } from 'vue'
 import { Fragment } from 'vue-fragment'
-import { v4 as uuid } from 'uuid'
 
 const SYMBOL_KEY = '__wrap_b'
 const SYMBOL_OBSERVER_KEY = '__wrap_o'
@@ -123,14 +122,13 @@ export default defineComponent({
      */
     id: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
   },
   setup(props, { slots, attrs }) {
     const As = props.as
     const wrapperRef = ref<HTMLElement | null>(null)
-    const id = props.id || uuid().replace(/-/g, '').slice(0, 5)
+    const id = props.id
     const hasProvider = inject<boolean>('BALANCER_CONTEXT', false)
 
     // Re-balance on content change and on mount/hydration
