@@ -6,9 +6,9 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import { defineComponent, inject, onUnmounted, provide, ref, watchPostEffect, withDirectives } from 'vue-demi'
+import { defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect, withDirectives } from 'vue'
 import { nanoid } from 'nanoid'
-import { h, vBindOnce } from './utils'
+import { vBindOnce } from './utils'
 
 const SYMBOL_KEY = '__wrap_b'
 const SYMBOL_OBSERVER_KEY = '__wrap_o'
