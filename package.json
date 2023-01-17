@@ -1,6 +1,6 @@
 {
   "name": "vue2-wrap-balancer",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "packageManager": "pnpm@7.25.0",
   "description": "Better text wrapping for Vue.",
   "author": "Robert Soriano <sorianorobertc@gmail.com>",
