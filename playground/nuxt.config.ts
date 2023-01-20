@@ -13,7 +13,7 @@ export default defineNuxtConfig({
         { name: 'og:description', content: 'Simple Vue Component That Makes Titles More Readable' },
         { name: 'og:site_name', content: 'Vue Wrap Balancer' },
         { name: 'og:url', content: 'https://vue-wrap-balancer.vercel.app' },
-        { name: 'og:image', content: 'https://i.imgur.com/GwuzxZx.png' },
+        { name: 'og:image', content: 'https://og-image.vercel.app/Vue%20Wrap%20Balancer.png' },
       ],
     },
   },
