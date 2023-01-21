@@ -5,5 +5,11 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   clean: true,
   minify: true,
+  sourcemap: true,
   dts: true,
+  esbuildOptions(options) {
+    options.banner = {
+      js: '"use client"',
+    }
+  },
 })
