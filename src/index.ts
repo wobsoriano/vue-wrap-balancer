@@ -147,6 +147,7 @@ export default defineComponent({
         'data-brr': props.ratio,
         'ref': wrapperRef,
         'style': {
+          ...attrs?.style,
           display: 'inline-block',
           verticalAlign: 'top',
           textDecoration: 'inherit',
