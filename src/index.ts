@@ -1,4 +1,3 @@
-/* eslint-disable vue/one-component-per-file */
 /*!
  * Original code by Shu Ding
  * MIT Licensed, Copyright 2022 Shu Ding, see https://github.com/shuding/react-wrap-balancer/blob/main/LICENSE.md for details
