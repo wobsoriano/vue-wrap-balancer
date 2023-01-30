@@ -94,7 +94,7 @@ import Balancer from 'vue-wrap-balancer'
               width="10"
               height="5"
               viewBox="0 0 30 10"
-              preserve-aspect-ratio="none"
+              preserveAspectRatio="none"
             >
               <polygon points="0,0 30,0 15,10" />
             </svg>
@@ -130,7 +130,7 @@ import Balancer from 'vue-wrap-balancer'
               width="10"
               height="5"
               view-box="0 0 30 10"
-              preserve-aspect-ratio="none"
+              preserveAspectRatio="none"
             >
               <polygon points="0,0 30,0 15,10" />
             </svg>
