@@ -93,7 +93,7 @@ import Balancer from 'vue-wrap-balancer'
               class="TooltipArrow"
               width="10"
               height="5"
-              view-box="0 0 30 10"
+              viewBox="0 0 30 10"
               preserve-aspect-ratio="none"
             >
               <polygon points="0,0 30,0 15,10" />
@@ -102,7 +102,7 @@ import Balancer from 'vue-wrap-balancer'
           <div class="tooltip-trigger">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              view-box="0 0 20 20"
+              viewBox="0 0 20 20"
               fill="currentColor"
               width="16"
             >
