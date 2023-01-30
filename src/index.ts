@@ -162,6 +162,7 @@ export default defineComponent({
         },
         ref: wrapperRef,
         style: {
+          ...attrs?.style as Record<string, string>,
           display: 'inline-block',
           verticalAlign: 'top',
           textDecoration: 'inherit',
