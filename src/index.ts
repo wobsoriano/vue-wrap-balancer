@@ -140,7 +140,7 @@ export default defineComponent({
       }
     })
 
-    return () => withDirectives(h(tag, {
+    return () => withDirectives(h(As, {
       ...attrs,
       'data-brr': props.ratio,
       'ref': wrapperRef,
