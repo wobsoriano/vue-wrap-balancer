@@ -14,31 +14,31 @@ npm install vue-wrap-balancer
 
 ## Usage
 
-The simplest way is to wrap the text content with `<Balancer>`:
+The simplest way is to wrap the text content with `<WrapBalancer>`:
 
 ```vue
 <script setup>
-import Balancer from 'vue-wrap-balancer'
+import WrapBalancer from 'vue-wrap-balancer'
 </script>
 
 <template>
   <h1>
-    <Balancer>My Title</Balancer>
+    <WrapBalancer>My Title</WrapBalancer>
   </h1>
 </template>
 ```
 
-If you have multiple `<Balancer>` components used, it’s recommended (but optional) to use `<Provider>` to wrap the entire app. This will make them share the re-balance logic and reduce the HTML size:
+If you have multiple `<WrapBalancer>` components used, it’s recommended (but optional) to use `<BalancerProvider>` to wrap the entire app. This will make them share the re-balance logic and reduce the HTML size:
 
 ```vue
 <script setup>
-import { Provider } from 'vue-wrap-balancer'
+import { BalancerProvider } from 'vue-wrap-balancer'
 </script>
 
 <template>
-  <Provider>
+  <BalancerProvider>
     <App />
-  </Provider>
+  </BalancerProvider>
 </template>
 ```
 
