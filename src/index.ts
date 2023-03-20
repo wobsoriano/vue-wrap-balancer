@@ -140,23 +140,23 @@ export default defineComponent({
       }
     })
 
-    return () => [
-      withDirectives(h(As, {
-        ...attrs,
-        'data-brr': props.ratio,
-        'ref': wrapperRef,
-        'style': {
-          ...attrs.style as Record<string, string>,
-          display: 'inline-block',
-          verticalAlign: 'top',
-          textDecoration: 'inherit',
-        },
-      }, slots.default?.()), [
-        [vBindOnce, ['data-br', id]],
-      ]),
+    return () => withDirectives(h(As, {
+      ...attrs,
+      'data-brr': props.ratio,
+      'ref': wrapperRef,
+      'style': {
+        ...attrs.style as Record<string, string>,
+        display: 'inline-block',
+        verticalAlign: 'top',
+        textDecoration: 'inherit',
+      },
+    }, [
+      slots.default?.(),
       withDirectives(createScriptElement(hasProvider, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
-        [vBindOnce, ['data-ssr-id', id]],
-      ]),
-    ]
+        [vBindOnce, ['data-ssr-id', id]]],
+      ),
+    ]), [
+      [vBindOnce, ['data-br', id]],
+    ])
   },
 })
