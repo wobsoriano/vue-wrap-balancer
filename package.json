@@ -44,16 +44,16 @@
     "vue": "^3.2.0"
   },
   "dependencies": {
-    "nanoid": "^4.0.0"
+    "nanoid": "^4.0.1"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.34.1",
+    "@antfu/eslint-config": "^0.34.2",
     "bumpp": "^8.2.1",
-    "eslint": "^8.31.0",
+    "eslint": "^8.36.0",
     "taze": "^0.8.5",
     "tsup": "6.5.0",
-    "typescript": "^4.9.4",
-    "vue": "^3.2.45"
+    "typescript": "^4.9.5",
+    "vue": "^3.2.47"
   },
   "eslintConfig": {
     "extends": "@antfu",
