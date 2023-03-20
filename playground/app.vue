@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Provider } from 'vue-wrap-balancer'
+import { BalancerProvider } from 'vue-wrap-balancer'
 </script>
 
 <template>
-  <Provider>
+  <BalancerProvider>
     <NuxtPage />
-  </Provider>
+  </BalancerProvider>
 </template>
 
 <style>
