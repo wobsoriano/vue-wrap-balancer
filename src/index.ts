@@ -10,6 +10,7 @@ import { nanoid } from 'nanoid'
 import { vBindOnce } from './utils'
 
 const SYMBOL_KEY = '__wrap_b'
+const SYMBOL_NATIVE_KEY = '__wrap_n'
 const SYMBOL_OBSERVER_KEY = '__wrap_o'
 
 type RelayoutFn = (
@@ -21,6 +22,11 @@ type RelayoutFn = (
 declare global {
   interface Window {
     [SYMBOL_KEY]: RelayoutFn
+    // A flag to indicate whether the browser supports text-balancing natively.
+    // undefined: not injected
+    // 1: injected and supported
+    // 2: injected but not supported
+    [SYMBOL_NATIVE_KEY]?: number
   }
 
   interface HTMLElement {
@@ -47,11 +53,16 @@ const relayout: RelayoutFn = (id, ratio, wrapper) => {
   let middle: number
 
   if (width) {
+    // Ensure we don't search widths lower than when the text overflows
+    update(lower)
+    lower = Math.max(wrapper.scrollWidth, lower)
+
     while (lower + 1 < upper) {
       middle = Math.round((lower + upper) / 2)
       update(middle)
       if (container.clientHeight === height)
         upper = middle
+
       else
         lower = middle
     }
@@ -65,7 +76,6 @@ const relayout: RelayoutFn = (id, ratio, wrapper) => {
   // the function.
   if (!wrapper.__wrap_o) {
     (wrapper.__wrap_o = new ResizeObserver(() => {
-      // eslint-disable-next-line no-restricted-globals
       self.__wrap_b(0, +wrapper!.dataset.brr!, wrapper)
     })).observe(container)
   }
@@ -73,19 +83,34 @@ const relayout: RelayoutFn = (id, ratio, wrapper) => {
 
 const RELAYOUT_STR = relayout.toString()
 
-function createScriptElement(injected: boolean, suffix?: string) {
+const isTextWrapBalanceSupported = '(self.CSS&&CSS.supports("text-wrap","balance")?1:2)'
+
+function createScriptElement(injected: boolean, nonce?: string, suffix?: string) {
+  if (suffix)
+    suffix = `self.${SYMBOL_NATIVE_KEY}!=1&&${suffix}`
+
   return h('script', {
-    innerHTML: (injected ? '' : `self.${SYMBOL_KEY}=${RELAYOUT_STR};`) + (suffix || ''),
+    innerHTML: (injected ? '' : `self.${SYMBOL_NATIVE_KEY}=self.${SYMBOL_NATIVE_KEY}||${isTextWrapBalanceSupported};self.${SYMBOL_KEY}=${RELAYOUT_STR};`) + suffix,
+    nonce,
   })
 }
 
 export const BalancerProvider = defineComponent({
   name: 'BalancerProvider',
-  setup(_props, { slots }) {
+  props: {
+    /**
+     * The nonce attribute to allowlist inline script injection by the component
+     */
+    nonce: {
+      type: String,
+      required: false,
+    },
+  },
+  setup(props, { slots }) {
     provide('BALANCER_CONTEXT', true)
 
     return () => [
-      createScriptElement(false),
+      createScriptElement(false, props.nonce),
       slots.default?.(),
     ]
   },
@@ -114,6 +139,13 @@ export default defineComponent({
       required: false,
       default: 1,
     },
+    /**
+     * The nonce attribute to allowlist inline script injection by the component.
+     */
+    nonce: {
+      type: String,
+      required: false,
+    },
   },
   setup(props, { slots, attrs }) {
     const As = props.as
@@ -123,15 +155,20 @@ export default defineComponent({
 
     // Re-balance on content change and on mount/hydration
     watchPostEffect(() => {
-      if (!wrapperRef.value)
+      // Skip if the browser supports text-balancing natively.
+      if (typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
         return
 
-      // eslint-disable-next-line no-restricted-globals
-      ;(self[SYMBOL_KEY] = relayout)(0, props.ratio, wrapperRef.value)
+      if (wrapperRef.value)
+        (self[SYMBOL_KEY] = relayout)(0, props.ratio, wrapperRef.value)
     })
 
     // Remove the observer when unmounting.
     onUnmounted(() => {
+      // Skip if the browser supports text-balancing natively.
+      if (typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
+        return
+
       if (!wrapperRef.value)
         return
 
@@ -151,10 +188,11 @@ export default defineComponent({
         display: 'inline-block',
         verticalAlign: 'top',
         textDecoration: 'inherit',
+        textWrap: 'balance',
       },
     }, [
       slots.default?.(),
-      withDirectives(createScriptElement(hasProvider, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
+      withDirectives(createScriptElement(hasProvider, props.nonce, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
         [vBindOnce, ['data-ssr-id', id]]],
       ),
     ]), [
