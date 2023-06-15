@@ -65,6 +65,7 @@ const relayout: RelayoutFn = (id, ratio, wrapper) => {
   // the function.
   if (!wrapper.__wrap_o) {
     (wrapper.__wrap_o = new ResizeObserver(() => {
+      // eslint-disable-next-line no-restricted-globals
       self.__wrap_b(0, +wrapper!.dataset.brr!, wrapper)
     })).observe(container)
   }
@@ -125,6 +126,7 @@ export default defineComponent({
       if (!wrapperRef.value)
         return
 
+      // eslint-disable-next-line no-restricted-globals
       ;(self[SYMBOL_KEY] = relayout)(0, props.ratio, wrapperRef.value)
     })
 

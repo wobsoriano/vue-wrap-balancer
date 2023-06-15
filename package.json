@@ -44,7 +44,7 @@
     "vue": "^3.2.0"
   },
   "dependencies": {
-    "nanoid": "^4.0.1"
+    "nanoid": "^4.0.2"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.34.2",
