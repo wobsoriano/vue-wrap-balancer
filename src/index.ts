@@ -8,9 +8,10 @@
  */
 import { defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect } from 'vue'
 import { Fragment } from 'vue-fragment'
-import { v4 as uuid } from 'uuid'
+import { nanoid } from 'nanoid'
 
 const SYMBOL_KEY = '__wrap_b'
+const SYMBOL_NATIVE_KEY = '__wrap_n'
 const SYMBOL_OBSERVER_KEY = '__wrap_o'
 
 type RelayoutFn = (
@@ -22,6 +23,11 @@ type RelayoutFn = (
 declare global {
   interface Window {
     [SYMBOL_KEY]: RelayoutFn
+    // A flag to indicate whether the browser supports text-balancing natively.
+    // undefined: not injected
+    // 1: injected and supported
+    // 2: injected but not supported
+    [SYMBOL_NATIVE_KEY]?: number
   }
 
   interface HTMLElement {
@@ -43,22 +49,27 @@ const relayout: RelayoutFn = (id, ratio, wrapper) => {
   const height = container.clientHeight
 
   // Synchronously do binary search and calculate the layout
-  let left: number = width / 2
-  let right: number = width
+  let lower: number = width / 2 - 0.25
+  let upper: number = width + 0.5
   let middle: number
 
   if (width) {
-    while (left + 1 < right) {
-      middle = ~~((left + right) / 2)
+    // Ensure we don't search widths lower than when the text overflows
+    update(lower)
+    lower = Math.max(wrapper.scrollWidth, lower)
+
+    while (lower + 1 < upper) {
+      middle = Math.round((lower + upper) / 2)
       update(middle)
       if (container.clientHeight === height)
-        right = middle
+        upper = middle
+
       else
-        left = middle
+        lower = middle
     }
 
     // Update the wrapper width
-    update(right * ratio + width * (1 - ratio))
+    update(upper * ratio + width * (1 - ratio))
   }
 
   // Create a new observer if we don't have one.
@@ -73,10 +84,13 @@ const relayout: RelayoutFn = (id, ratio, wrapper) => {
 
 const RELAYOUT_STR = relayout.toString()
 
-function createScriptElement(injected: boolean, suffix?: string) {
+const isTextWrapBalanceSupported = '(self.CSS&&CSS.supports("text-wrap","balance")?1:2)'
+
+function createScriptElement(injected: boolean, nonce?: string, suffix?: string) {
   return h('script', {
     domProps: {
-      innerHTML: (injected ? '' : `self.${SYMBOL_KEY}=${RELAYOUT_STR};`) + (suffix || ''),
+      innerHTML: (injected ? '' : `self.${SYMBOL_NATIVE_KEY}=self.${SYMBOL_NATIVE_KEY}||${isTextWrapBalanceSupported};self.${SYMBOL_KEY}=${RELAYOUT_STR};`) + suffix,
+      nonce,
     },
   })
 }
@@ -84,18 +98,27 @@ function createScriptElement(injected: boolean, suffix?: string) {
 export const Provider = defineComponent({
   name: 'BalancerProvider',
   components: { Fragment },
-  setup(_props, { slots }) {
+  props: {
+    /**
+     * The nonce attribute to allowlist inline script injection by the component
+     */
+    nonce: {
+      type: String,
+      required: false,
+    },
+  },
+  setup(props, { slots }) {
     provide('BALANCER_CONTEXT', true)
 
     return () => h('Fragment', [
-      createScriptElement(false),
+      createScriptElement(false, props.nonce),
       slots.default?.(),
     ])
   },
 })
 
 export default defineComponent({
-  name: 'Balancer',
+  name: 'WrapBalancer',
   components: { Fragment },
   props: {
     /**
@@ -119,30 +142,43 @@ export default defineComponent({
       default: 1,
     },
     /**
+     * The nonce attribute to allowlist inline script injection by the component.
+     */
+    nonce: {
+      type: String,
+      required: false,
+    },
+    /**
      * Required for SSR.
      */
     id: {
       type: String,
       required: false,
-      default: '',
+      default: nanoid(5),
     },
   },
   setup(props, { slots, attrs }) {
     const As = props.as
+    const id = props.id
     const wrapperRef = ref<HTMLElement | null>(null)
-    const id = props.id || uuid().replace(/-/g, '').slice(0, 5)
     const hasProvider = inject<boolean>('BALANCER_CONTEXT', false)
 
     // Re-balance on content change and on mount/hydration
     watchPostEffect(() => {
-      if (!wrapperRef.value)
+      // Skip if the browser supports text-balancing natively.
+      if (typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
         return
 
-      ;(self[SYMBOL_KEY] = relayout)(0, props.ratio, wrapperRef.value)
+      if (wrapperRef.value)
+        (self[SYMBOL_KEY] = relayout)(0, props.ratio, wrapperRef.value)
     })
 
     // Remove the observer when unmounting.
     onUnmounted(() => {
+      // Skip if the browser supports text-balancing natively.
+      if (typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
+        return
+
       if (!wrapperRef.value)
         return
 
@@ -166,6 +202,8 @@ export default defineComponent({
           display: 'inline-block',
           verticalAlign: 'top',
           textDecoration: 'inherit',
+          // @ts-expect-error: text-wrap not available
+          textWrap: 'balance',
         },
       }, slots.default?.()),
       createScriptElement(hasProvider, `self.${SYMBOL_KEY}('${id}',${props.ratio})`),

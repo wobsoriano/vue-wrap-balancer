@@ -46,12 +46,11 @@
     }
   },
   "dependencies": {
-    "uuid": "^9.0.0",
+    "nanoid": "^4.0.2",
     "vue-fragment": "^1.6.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.5",
-    "@types/uuid": "^9.0.2",
     "bumpp": "^9.1.1",
     "eslint": "^8.43.0",
     "taze": "^0.10.2",
