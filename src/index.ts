@@ -5,8 +5,7 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import type { ComputedRef } from 'vue'
-import { computed, defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect, withDirectives } from 'vue'
+import { computed, defineComponent, h, inject, onUnmounted, provide, ref, unref, watchPostEffect, withDirectives } from 'vue'
 import { nanoid } from 'nanoid'
 import { vBindOnce } from './utils'
 
@@ -118,11 +117,11 @@ export const BalancerProvider = defineComponent({
     },
   },
   setup(props, { slots }) {
-    const contextValue = computed(() => ({
-      preferNative: props.preferNative,
+    const preferNative = computed(() => props.preferNative)
+    provide('BALANCER_PROVIDER', {
+      preferNative,
       hasProvider: true,
-    }))
-    provide('BALANCER_CONTEXT', contextValue)
+    })
 
     return () => [
       createScriptElement(false, props.nonce),
@@ -176,12 +175,12 @@ export default defineComponent({
     const As = props.as
     const id = attrs.id || nanoid(5)
     const wrapperRef = ref<HTMLElement | null>(null)
-    const contextValue = inject<ComputedRef<{
-      preferNative: boolean
-      hasProvider: boolean
-    }>>('BALANCER_CONTEXT')
+    const contextValue = inject('BALANCER_PROVIDER', {
+      preferNative: true,
+      hasProvider: false,
+    })
 
-    const preferNativeBalancing = computed(() => props.preferNative ?? contextValue?.value.preferNative)
+    const preferNativeBalancing = computed(() => props.preferNative ?? unref(contextValue.preferNative))
 
     // Re-balance on content change and on mount/hydration
     watchPostEffect(() => {
@@ -222,7 +221,7 @@ export default defineComponent({
       },
     }, [
       slots.default?.(),
-      withDirectives(createScriptElement(contextValue?.value.hasProvider ?? false, props.nonce, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
+      withDirectives(createScriptElement(contextValue.hasProvider, props.nonce, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
         [vBindOnce, ['data-ssr-id', id]]],
       ),
     ]), [
