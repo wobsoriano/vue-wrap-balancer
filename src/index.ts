@@ -217,7 +217,7 @@ export default defineComponent({
         display: 'inline-block',
         verticalAlign: 'top',
         textDecoration: 'inherit',
-        textWrap: preferNativeBalancing ? 'balance' : 'initial',
+        textWrap: preferNativeBalancing.value ? 'balance' : 'initial',
       },
     }, [
       slots.default?.(),
