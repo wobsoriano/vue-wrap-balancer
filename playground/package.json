@@ -13,6 +13,6 @@
     "vue-wrap-balancer": "workspace:*"
   },
   "devDependencies": {
-    "nuxt": "3.3.1"
+    "nuxt": "3.7.0"
   }
 }
