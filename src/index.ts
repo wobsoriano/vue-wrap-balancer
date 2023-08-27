@@ -5,7 +5,8 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import { ComputedRef, computed, defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect, withDirectives } from 'vue'
+import type { ComputedRef } from 'vue'
+import { computed, defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect, withDirectives } from 'vue'
 import { nanoid } from 'nanoid'
 import { vBindOnce } from './utils'
 
@@ -161,7 +162,7 @@ export default defineComponent({
     preferNative: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     /**
      * The nonce attribute to allowlist inline script injection by the component.
@@ -176,8 +177,8 @@ export default defineComponent({
     const id = attrs.id || nanoid(5)
     const wrapperRef = ref<HTMLElement | null>(null)
     const contextValue = inject<ComputedRef<{
-        preferNative: boolean;
-        hasProvider: boolean;
+      preferNative: boolean
+      hasProvider: boolean
     }>>('BALANCER_CONTEXT')
 
     const preferNativeBalancing = computed(() => props.preferNative ?? contextValue?.value.preferNative)
