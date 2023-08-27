@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "vue-use-spring": "^0.1.1",
-    "vue-wrap-balancer": "^1.0.0"
+    "vue-wrap-balancer": "workspace:*"
   },
   "devDependencies": {
     "nuxt": "3.7.0"
