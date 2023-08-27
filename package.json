@@ -29,7 +29,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup --env.NODE_ENV production",
     "dev": "tsup --watch --onSuccess=\"pnpm -C playground dev\"",
     "lint": "eslint .",
     "prepublishOnly": "pnpm build",

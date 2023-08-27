@@ -27,7 +27,7 @@ function handleRangeChange(payload: Event) {
             </Balancer>
           </h2>
           <h2 class="ratio-title">
-            <Balancer :ratio="ratio.w">
+            <Balancer :ratio="ratio.w" :prefer-native="false">
               The quick brown fox jumps over the lazy dog
             </Balancer>
           </h2>

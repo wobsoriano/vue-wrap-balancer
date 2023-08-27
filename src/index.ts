@@ -5,7 +5,7 @@
  * Credits to the team:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import { defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect, withDirectives } from 'vue'
+import { ComputedRef, computed, defineComponent, h, inject, onUnmounted, provide, ref, watchPostEffect, withDirectives } from 'vue'
 import { nanoid } from 'nanoid'
 import { vBindOnce } from './utils'
 
@@ -99,6 +99,16 @@ export const BalancerProvider = defineComponent({
   name: 'BalancerProvider',
   props: {
     /**
+     * An option to skip the re-balance logic
+     * and use the native CSS text-balancing if supported.
+     * @default true
+     */
+    preferNative: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    /**
      * The nonce attribute to allowlist inline script injection by the component
      */
     nonce: {
@@ -107,7 +117,11 @@ export const BalancerProvider = defineComponent({
     },
   },
   setup(props, { slots }) {
-    provide('BALANCER_CONTEXT', true)
+    const contextValue = computed(() => ({
+      preferNative: props.preferNative,
+      hasProvider: true,
+    }))
+    provide('BALANCER_CONTEXT', contextValue)
 
     return () => [
       createScriptElement(false, props.nonce),
@@ -140,6 +154,16 @@ export default defineComponent({
       default: 1,
     },
     /**
+     * An option to skip the re-balance logic
+     * and use the native CSS text-balancing if supported.
+     * @default true
+     */
+    preferNative: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    /**
      * The nonce attribute to allowlist inline script injection by the component.
      */
     nonce: {
@@ -151,12 +175,17 @@ export default defineComponent({
     const As = props.as
     const id = attrs.id || nanoid(5)
     const wrapperRef = ref<HTMLElement | null>(null)
-    const hasProvider = inject<boolean>('BALANCER_CONTEXT', false)
+    const contextValue = inject<ComputedRef<{
+        preferNative: boolean;
+        hasProvider: boolean;
+    }>>('BALANCER_CONTEXT')
+
+    const preferNativeBalancing = computed(() => props.preferNative ?? contextValue?.value.preferNative)
 
     // Re-balance on content change and on mount/hydration
     watchPostEffect(() => {
       // Skip if the browser supports text-balancing natively.
-      if (typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
+      if (preferNativeBalancing.value && typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
         return
 
       if (wrapperRef.value)
@@ -166,7 +195,7 @@ export default defineComponent({
     // Remove the observer when unmounting.
     onUnmounted(() => {
       // Skip if the browser supports text-balancing natively.
-      if (typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
+      if (preferNativeBalancing.value && typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
         return
 
       if (!wrapperRef.value)
@@ -188,11 +217,11 @@ export default defineComponent({
         display: 'inline-block',
         verticalAlign: 'top',
         textDecoration: 'inherit',
-        textWrap: 'balance',
+        textWrap: preferNativeBalancing ? 'balance' : 'initial',
       },
     }, [
       slots.default?.(),
-      withDirectives(createScriptElement(hasProvider, props.nonce, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
+      withDirectives(createScriptElement(contextValue?.value.hasProvider ?? false, props.nonce, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
         [vBindOnce, ['data-ssr-id', id]]],
       ),
     ]), [
