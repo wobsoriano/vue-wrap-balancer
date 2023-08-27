@@ -19,11 +19,8 @@
   ],
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs"
-    }
+    "require": "./dist/index.js",
+    "import": "./dist/index.mjs"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -41,10 +38,10 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "vue": "^3.2.0"
+    "vue": "^3.3.0"
   },
   "dependencies": {
-    "nanoid": "^4.0.2"
+    "nanoid": "^3.3.4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.34.2",
@@ -53,7 +50,7 @@
     "taze": "^0.8.5",
     "tsup": "6.5.0",
     "typescript": "^4.9.5",
-    "vue": "^3.2.47"
+    "vue": "^3.3.4"
   },
   "eslintConfig": {
     "extends": "@antfu",
