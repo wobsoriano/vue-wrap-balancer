@@ -2,10 +2,10 @@
  * Original code by Shu Ding
  * MIT Licensed, Copyright 2022 Shu Ding, see https://github.com/shuding/react-wrap-balancer/blob/main/LICENSE.md for details
  *
- * Credits to the team:
+ * Credits:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import { computed, defineComponent, h, inject, onUnmounted, provide, ref, unref, watchPostEffect, withDirectives } from 'vue'
+import { type CSSProperties, computed, defineComponent, h, inject, onUnmounted, provide, ref, unref, watchEffect, withDirectives } from 'vue'
 import { nanoid } from 'nanoid'
 import { vBindOnce } from './utils'
 
@@ -130,8 +130,8 @@ export const BalancerProvider = defineComponent({
   },
 })
 
-export default defineComponent({
-  name: 'WrapBalancer',
+export const Balancer = defineComponent({
+  name: 'Balancer',
   props: {
     /**
      * The HTML tag to use for the wrapper element.
@@ -183,7 +183,7 @@ export default defineComponent({
     const preferNativeBalancing = computed(() => props.preferNative ?? unref(contextValue.preferNative))
 
     // Re-balance on content change and on mount/hydration
-    watchPostEffect(() => {
+    watchEffect(() => {
       // Skip if the browser supports text-balancing natively.
       if (preferNativeBalancing.value && typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
         return
@@ -211,9 +211,10 @@ export default defineComponent({
     return () => withDirectives(h(As, {
       ...attrs,
       'data-brr': props.ratio,
+      'data-allow-mismatch': true,
       'ref': wrapperRef,
       'style': {
-        ...attrs.style as Record<string, string>,
+        ...attrs.style as CSSProperties,
         display: 'inline-block',
         verticalAlign: 'top',
         textDecoration: 'inherit',
@@ -222,10 +223,12 @@ export default defineComponent({
     }, [
       slots.default?.(),
       withDirectives(createScriptElement(contextValue.hasProvider, props.nonce, `self.${SYMBOL_KEY}(document.currentScript.dataset.ssrId,${props.ratio})`), [
-        [vBindOnce, ['data-ssr-id', id]]],
-      ),
+        [vBindOnce, ['data-ssr-id', id]],
+      ]),
     ]), [
       [vBindOnce, ['data-br', id]],
     ])
   },
 })
+
+export default Balancer

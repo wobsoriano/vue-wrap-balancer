@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Balancer from 'vue-wrap-balancer'
+import { Balancer } from 'vue-wrap-balancer'
 </script>
 
 <template>

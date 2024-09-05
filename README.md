@@ -18,12 +18,12 @@ Wrap text content with it:
 
 ```vue
 <script setup>
-import WrapBalancer from 'vue-wrap-balancer'
+import { Balancer } from 'vue-wrap-balancer'
 </script>
 
 <template>
   <h1>
-    <WrapBalancer>My Awesome Title</WrapBalancer>
+    <Balancer>My Awesome Title</Balancer>
   </h1>
 </template>
 ```
