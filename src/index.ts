@@ -5,7 +5,7 @@
  * Credits:
  * https://github.com/shuding/react-wrap-balancer/blob/main/src/index.tsx
  */
-import { type CSSProperties, computed, defineComponent, h, inject, onUnmounted, provide, ref, unref, watchPostEffect, withDirectives } from 'vue'
+import { type CSSProperties, computed, defineComponent, h, inject, onUnmounted, provide, ref, unref, watchEffect, withDirectives } from 'vue'
 import { nanoid } from 'nanoid'
 import { vBindOnce } from './utils'
 
@@ -183,7 +183,7 @@ export const Balancer = defineComponent({
     const preferNativeBalancing = computed(() => props.preferNative ?? unref(contextValue.preferNative))
 
     // Re-balance on content change and on mount/hydration
-    watchPostEffect(() => {
+    watchEffect(() => {
       // Skip if the browser supports text-balancing natively.
       if (preferNativeBalancing.value && typeof self !== 'undefined' && self[SYMBOL_NATIVE_KEY] === 1)
         return
