@@ -1,5 +1,11 @@
 # vue-wrap-balancer
 
+## 1.2.1
+
+### Patch Changes
+
+- 5cbd9c8: Replace bumpp with changesets
+
 ## 1.2.0
 
 ### Minor Changes
