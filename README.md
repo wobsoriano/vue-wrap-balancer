@@ -18,7 +18,7 @@ Wrap text content with it:
 
 ```vue
 <script setup>
-import WrapBalancer from 'vue-wrap-balancer'
+import { WrapBalancer } from 'vue-wrap-balancer'
 </script>
 
 <template>

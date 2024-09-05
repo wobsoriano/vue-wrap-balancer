@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Balancer from 'vue-wrap-balancer'
+import { Balancer } from 'vue-wrap-balancer'
 import { useSpring } from 'vue-use-spring'
 
 const ratio = useSpring({ w: 0.65 })
