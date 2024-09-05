@@ -10,7 +10,6 @@ export default antfu(
   },
   {
     rules: {
-      'no-console': 'warn',
       'node/prefer-global/process': 'warn',
       'vue/one-component-per-file': 'off',
       'no-restricted-globals': 'off',
