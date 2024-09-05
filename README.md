@@ -28,9 +28,9 @@ import { Balancer } from 'vue-wrap-balancer'
 </template>
 ```
 
-### `<WrapBalancer>`
+### `<Balancer>`
 
-`<WrapBalancer>` is the main component of the library. It will automatically balance the text content inside it. It accepts the following props:
+`<Balancer>` is the main component of the library. It will automatically balance the text content inside it. It accepts the following props:
 
 - **`as`** (_optional_): The HTML tag to be used to wrap the text content. Default to `span`.
 - **`ratio`** (_optional_): The ratio of “balance-ness”, 0 <= ratio <= 1. Default to `1`.
